@@ -64,12 +64,10 @@ export default function Simulator() {
       clearTimeout(timer);
     };
   }, [simData, historyLoading, latest, baselineRisk]);
-  const displayedBaselineRisk = baselineRisk === null ? null : Math.round(Number(baselineRisk));
-  const displayedSimRisk = simRisk === null ? null : Math.round(Number(simRisk));
   const change =
-    displayedBaselineRisk === null || displayedSimRisk === null
+    baselineRisk === null || simRisk === null
       ? 0
-      : displayedSimRisk - displayedBaselineRisk;
+      : Number(simRisk) - Number(baselineRisk);
   const changed = (key) => simData[key] !== baselineData[key];
   const update = (key, value) =>
     setSimData((data) => ({ ...data, [key]: Number(value) }));
@@ -179,21 +177,21 @@ export default function Simulator() {
           </div>
           <div className="sim-numbers">
             <div>
-              <small>Current</small>
+              <small>Current Risk</small>
               <strong>
-                {displayedBaselineRisk !== null
-                  ? `${displayedBaselineRisk}%`
+                {baselineRisk !== null
+                  ? `${Number(baselineRisk).toFixed(2)}%`
                   : "--"}
               </strong>
-                <span>baseline model estimate</span>
+                <span>latest assessment baseline</span>
             </div>
             <ArrowRight size={28} className="sim-arrow" />
             <div className="sim-current">
-              <small>Simulated</small>
+              <small>Simulated Risk</small>
               <strong>
-                {displayedSimRisk !== null ? `${displayedSimRisk}%` : "--"}
+                {simRisk !== null ? `${Number(simRisk).toFixed(2)}%` : "--"}
               </strong>
-                <span>new model estimate</span>
+                <span>scenario model estimate</span>
             </div>
           </div>
           <div
@@ -209,7 +207,7 @@ export default function Simulator() {
             <strong>
               {change === 0
                 ? "No change yet"
-                : `${Math.abs(change)} percentage points`}
+                : `${Math.abs(change).toFixed(2)} percentage points`}
             </strong>
             <span>
               {change < 0
