@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 import pickle
-import numpy as np
 import os
+import pandas as pd
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.models.assessment import AssessmentHistory
 from app.models.user import User
 from app.security import get_current_user
 from app.schemas.assessment import HealthDataInput, PredictionResponse
+from ml.features import FEATURE_ORDER
 
 router = APIRouter()
 
@@ -26,6 +27,12 @@ def load_model_artifacts():
             model = pickle.load(model_file)
         with open(SCALER_PATH, 'rb') as scaler_file:
             scaler = pickle.load(scaler_file)
+        if getattr(model, 'n_features_in_', None) != len(FEATURE_ORDER):
+            raise ValueError('Model feature count does not match the prediction feature order')
+        if getattr(scaler, 'n_features_in_', None) != len(FEATURE_ORDER):
+            raise ValueError('Scaler feature count does not match the prediction feature order')
+        if 1 not in getattr(model, 'classes_', []):
+            raise ValueError('Model does not contain the positive class')
     return model, scaler
 
 @router.post("/predict", response_model=PredictionResponse)
@@ -34,14 +41,14 @@ def predict_risk(data: HealthDataInput, persist: bool = Query(True), user: User 
         import shap
 
         model, scaler = load_model_artifacts()
-        feature_names = ['age', 'sex', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak']
-        input_data = np.array([[
-            data.age, data.sex, data.trestbps, data.chol, 
-            data.fbs, data.restecg, data.thalach, data.exang, data.oldpeak
-        ]])
+        input_data = pd.DataFrame(
+            [[getattr(data, feature) for feature in FEATURE_ORDER]],
+            columns=FEATURE_ORDER,
+        )
         
         input_scaled = scaler.transform(input_data)
-        probability = float(model.predict_proba(input_scaled)[0][1] * 100)
+        positive_class_index = list(model.classes_).index(1)
+        probability = float(model.predict_proba(input_scaled)[0][positive_class_index] * 100)
         
         if probability < 33:
             category = "LOW"
@@ -53,7 +60,7 @@ def predict_risk(data: HealthDataInput, persist: bool = Query(True), user: User 
         explainer = shap.TreeExplainer(model)
         shap_vals = explainer.shap_values(input_scaled)
         
-        shap_dict = {feature_names[i]: float(shap_vals[0][i]) for i in range(len(feature_names))}
+        shap_dict = {FEATURE_ORDER[i]: float(shap_vals[0][i]) for i in range(len(FEATURE_ORDER))}
         
         insights = []
         if data.trestbps > 130:
@@ -73,14 +80,14 @@ def predict_risk(data: HealthDataInput, persist: bool = Query(True), user: User 
                 thalach=data.thalach,
                 exang=data.exang,
                 oldpeak=data.oldpeak,
-                risk_probability=round(probability, 2),
+                risk_probability=probability,
                 risk_category=category,
             )
             db.add(assessment)
             db.commit()
 
         return PredictionResponse(
-            risk_probability=round(probability, 2),
+            risk_probability=probability,
             risk_category=category,
             shap_values=shap_dict,
             insights=insights,

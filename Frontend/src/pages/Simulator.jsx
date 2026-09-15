@@ -10,26 +10,26 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { submitAssessment } from "../services/api";
-import { defaultHealthData } from "../services/storage";
+import EmptyState from "../components/common/EmptyState";
 import useHistoryData from "../hooks/useHistoryData";
 
 export default function Simulator() {
   const { history, loading: historyLoading } = useHistoryData();
   const latest = history[0];
-  const baselineData = latest?.form_data || defaultHealthData;
-  const savedBaselineRisk = latest?.risk_probability ?? null;
-  const [baselineRisk, setBaselineRisk] = useState(savedBaselineRisk);
-  const [simData, setSimData] = useState(baselineData);
-  const [simRisk, setSimRisk] = useState(savedBaselineRisk);
+  const baselineData = latest?.form_data;
+  const [baselineRisk, setBaselineRisk] = useState(null);
+  const [simData, setSimData] = useState(null);
+  const [simRisk, setSimRisk] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
-    setSimData(baselineData);
-    setBaselineRisk(savedBaselineRisk);
-    setSimRisk(savedBaselineRisk);
+    if (!baselineData) return;
+    setSimData({ ...baselineData });
+    setBaselineRisk(null);
+    setSimRisk(null);
   }, [latest?.id]);
   useEffect(() => {
-    if (historyLoading) return;
+    if (historyLoading || !latest || !simData) return;
     let active = true;
     const timer = setTimeout(async () => {
       setLoading(true);
@@ -52,7 +52,7 @@ export default function Simulator() {
       active = false;
       clearTimeout(timer);
     };
-  }, [simData, historyLoading]);
+  }, [simData, historyLoading, latest]);
   const change =
     baselineRisk === null || simRisk === null
       ? 0
@@ -65,6 +65,16 @@ export default function Simulator() {
       <div className="auth-loading">
         <div className="loading-spinner" />
         <span>Loading your private baseline...</span>
+      </div>
+    );
+  if (!latest)
+    return (
+      <div className="center-page">
+        <EmptyState
+          title="Complete an assessment first"
+          text="Complete a cardiovascular assessment first to use What-if Lab."
+          action="Start assessment"
+        />
       </div>
     );
   return (
@@ -103,7 +113,7 @@ export default function Simulator() {
             helper="Systolic · mmHg"
             value={simData.trestbps}
             baseline={baselineData.trestbps}
-            min={90}
+            min={94}
             max={200}
             unit="mmHg"
             onChange={(value) => update("trestbps", value)}
@@ -114,8 +124,8 @@ export default function Simulator() {
             helper="mg/dL"
             value={simData.chol}
             baseline={baselineData.chol}
-            min={100}
-            max={400}
+            min={126}
+            max={564}
             unit="mg/dL"
             onChange={(value) => update("chol", value)}
             changed={changed("chol")}
@@ -125,8 +135,8 @@ export default function Simulator() {
             helper="BPM achieved"
             value={simData.thalach}
             baseline={baselineData.thalach}
-            min={70}
-            max={220}
+            min={71}
+            max={202}
             unit="BPM"
             onChange={(value) => update("thalach", value)}
             changed={changed("thalach")}
@@ -140,7 +150,7 @@ export default function Simulator() {
         </section>
         <section className="panel simulation-result">
           <div className="sim-result-top">
-            <span className="eyebrow">Estimated scenario</span>
+            <span className="eyebrow">Estimated model scenario</span>
             {loading && (
               <span className="calculating">
                 <i /> recalculating
@@ -155,7 +165,7 @@ export default function Simulator() {
                   ? `${Number(baselineRisk).toFixed(0)}%`
                   : "--"}
               </strong>
-              <span>baseline risk</span>
+                <span>baseline model estimate</span>
             </div>
             <ArrowRight size={28} className="sim-arrow" />
             <div className="sim-current">
@@ -163,7 +173,7 @@ export default function Simulator() {
               <strong>
                 {simRisk !== null ? `${Number(simRisk).toFixed(0)}%` : "--"}
               </strong>
-              <span>new estimate</span>
+                <span>new model estimate</span>
             </div>
           </div>
           <div

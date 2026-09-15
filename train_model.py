@@ -8,6 +8,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report
 import os
 
+from Backend.ml.features import FEATURE_ORDER
+
 def train_and_save_model():
     data_path = os.path.join(os.path.dirname(__file__), 'heart_2.csv')
     
@@ -17,7 +19,7 @@ def train_and_save_model():
         print(f"Error: Could not find '{data_path}'. Please ensure heart_2.csv is in the ml/ directory.")
         return
     
-    X = df[['age', 'sex', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak']]
+    X = df[list(FEATURE_ORDER)]
     y = df['target']
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
