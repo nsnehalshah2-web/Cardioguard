@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import AppShell from './components/layout/AppShell';
 import Landing from './pages/Landing';
@@ -19,12 +19,11 @@ import CheckIn from './pages/CheckIn';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
-  const basename = import.meta.env.BASE_URL === './'
-    ? undefined
-    : import.meta.env.BASE_URL.replace(/\/$/, '');
+  const isProduction = import.meta.env.BASE_URL !== './';
+  const Router = isProduction ? HashRouter : BrowserRouter;
 
   return (
-    <Router basename={basename}>
+    <Router>
       <AuthProvider>
       <Routes>
         <Route path="/" element={<Landing />} />
