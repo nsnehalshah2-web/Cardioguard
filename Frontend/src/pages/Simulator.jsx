@@ -53,10 +53,12 @@ export default function Simulator() {
       clearTimeout(timer);
     };
   }, [simData, historyLoading, latest]);
+  const displayedBaselineRisk = baselineRisk === null ? null : Math.round(Number(baselineRisk));
+  const displayedSimRisk = simRisk === null ? null : Math.round(Number(simRisk));
   const change =
-    baselineRisk === null || simRisk === null
+    displayedBaselineRisk === null || displayedSimRisk === null
       ? 0
-      : Number(simRisk) - Number(baselineRisk);
+      : displayedSimRisk - displayedBaselineRisk;
   const changed = (key) => simData[key] !== baselineData[key];
   const update = (key, value) =>
     setSimData((data) => ({ ...data, [key]: Number(value) }));
@@ -168,8 +170,8 @@ export default function Simulator() {
             <div>
               <small>Current</small>
               <strong>
-                {baselineRisk !== null
-                  ? `${Number(baselineRisk).toFixed(0)}%`
+                {displayedBaselineRisk !== null
+                  ? `${displayedBaselineRisk}%`
                   : "--"}
               </strong>
                 <span>baseline model estimate</span>
@@ -178,7 +180,7 @@ export default function Simulator() {
             <div className="sim-current">
               <small>Simulated</small>
               <strong>
-                {simRisk !== null ? `${Number(simRisk).toFixed(0)}%` : "--"}
+                {displayedSimRisk !== null ? `${displayedSimRisk}%` : "--"}
               </strong>
                 <span>new model estimate</span>
             </div>
@@ -196,7 +198,7 @@ export default function Simulator() {
             <strong>
               {change === 0
                 ? "No change yet"
-                : `${Math.abs(change).toFixed(1)} percentage points`}
+                : `${Math.abs(change)} percentage points`}
             </strong>
             <span>
               {change < 0
