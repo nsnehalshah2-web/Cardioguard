@@ -38,7 +38,7 @@ jobs:
       - name: Build frontend
         working-directory: Frontend
         env:
-          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_API_BASE_URL: https://cardioguard-api-noup.onrender.com/api/v1
         run: npm run build
 
       - name: Support direct client-side routes
