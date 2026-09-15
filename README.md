@@ -25,7 +25,7 @@ The platform combines **Machine Learning, risk prediction, What-If analysis, aut
 - 📱 Responsive Web Interface
 
 ---
-##🧠 Machine Learning Model
+## 🧠 Machine Learning Model
 
 CardioGuard uses an XGBoost classifier with 9 clinical features:
 
@@ -38,3 +38,22 @@ CardioGuard uses an XGBoost classifier with 9 clinical features:
 - Maximum Heart Rate
 - Exercise-Induced Angina
 - Oldpeak
+
+## 🔗 System Architecture
+
+```mermaid
+flowchart TB
+    U[User] --> F[React Frontend]
+    F --> API[FastAPI REST API]
+    API --> V[Input Validation]
+    V --> S[StandardScaler]
+    S --> M[XGBoost Model]
+    M --> R[Risk Prediction]
+    API --> DB[(SQLite Database)]
+    R --> F
+```
+
+## 👩‍💻 Author
+
+- Nehal Shah
+- Computer Science Engineering
