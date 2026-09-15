@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Simulator from './pages/Simulator';
 import History from './pages/History';
 import Insights from './pages/Insights';
+import ModelInsights from './pages/ModelInsights';
 import Reports from './pages/Reports';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
@@ -38,6 +39,7 @@ function App() {
           <Route path="/simulator" element={<Simulator />} />
           <Route path="/history" element={<History />} />
           <Route path="/insights" element={<Insights />} />
+                    <Route path="/model-insights" element={<ModelInsights />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />

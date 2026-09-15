@@ -31,6 +31,7 @@ export const requestPasswordReset = async (email) => (await api.post('/auth/forg
 export const resetPassword = async (payload) => (await api.post('/auth/reset-password', payload)).data;
 export const getCurrentUser = async () => (await api.get('/auth/me')).data;
 export const getHistory = async () => (await api.get('/history')).data;
+export const getModelInsights = async () => (await api.get('/model-insights')).data;
 
 export function getApiErrorMessage(error, fallback) {
     if (!error.response) return 'The health service is unavailable. Please make sure the backend is running and try again.';

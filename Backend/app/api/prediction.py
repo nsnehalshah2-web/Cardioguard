@@ -7,7 +7,9 @@ from app.database.connection import get_db
 from app.models.assessment import AssessmentHistory
 from app.models.user import User
 from app.security import get_current_user
-from app.schemas.assessment import HealthDataInput, PredictionResponse
+from app.schemas.assessment import HealthDataInput, ModelInsightsResponse, PredictionResponse
+from app.services.action_plan import build_action_plan
+from ml.evaluation import calculate_model_metrics
 from ml.features import FEATURE_ORDER
 
 router = APIRouter()
@@ -68,6 +70,8 @@ def predict_risk(data: HealthDataInput, persist: bool = Query(True), user: User 
         if data.chol > 200:
             insights.append("Cholesterol levels are above normal ranges.")
             
+        action_plan = build_action_plan(data)
+
         if persist:
             assessment = AssessmentHistory(
                 user_id=user.id,
@@ -91,6 +95,7 @@ def predict_risk(data: HealthDataInput, persist: bool = Query(True), user: User 
             risk_category=category,
             shap_values=shap_dict,
             insights=insights,
+            action_plan=action_plan,
         )
         
     except Exception as e:
@@ -117,6 +122,15 @@ def assessment_history(user: User = Depends(get_current_user), db: Session = Dep
                 "exang": record.exang,
                 "oldpeak": record.oldpeak,
             },
+            "action_plan": build_action_plan(record),
         }
         for record in records
     ]
+
+
+@router.get("/model-insights", response_model=ModelInsightsResponse)
+def model_insights(user: User = Depends(get_current_user)):
+    try:
+        return calculate_model_metrics()
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))

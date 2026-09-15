@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -20,3 +20,16 @@ class PredictionResponse(BaseModel):
     risk_category: str
     shap_values: dict
     insights: list
+    action_plan: list[dict[str, Any]]
+
+class ModelInsightsResponse(BaseModel):
+    evaluation_method: str
+    dataset: str
+    test_samples: int
+    accuracy: float
+    precision: float
+    recall: float
+    f1_score: float
+    roc_auc: float
+    confusion_matrix: list[list[int]]
+    feature_importance: list[dict[str, Any]]
