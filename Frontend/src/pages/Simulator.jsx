@@ -77,6 +77,13 @@ export default function Simulator() {
         />
       </div>
     );
+  if (!baselineData || !simData)
+    return (
+      <div className="auth-loading">
+        <div className="loading-spinner" />
+        <span>Preparing your private baseline...</span>
+      </div>
+    );
   return (
     <div className="simulator-page">
       <div className="page-heading">
