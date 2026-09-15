@@ -71,3 +71,7 @@ https://cardioguard-api-noup.onrender.com/
                     │      Database        │
                     │ Assessment History   │
                     └──────────────────────┘
+
+The backend also requires `CARDIOGUARD_SECRET_KEY`, `FRONTEND_URL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, and `SMTP_FROM`. Set `SMTP_USE_TLS=true` for standard TLS SMTP. If the frontend URL includes a path, such as GitHub Pages, set `FRONTEND_URL` to the origin and `FRONTEND_APP_URL` to the full URL ending in `/Cardioguard`.
+
+For local development, run `npm run dev` from the repository root. This starts the frontend and backend together.

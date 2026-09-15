@@ -1,14 +1,23 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-    || (window.location.protocol === 'file:' ? 'http://127.0.0.1:8000/api/v1' : '/api/v1');
+export const TOKEN_KEY = 'cardioguard_token';
+const configuredApiUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const API_BASE_URL = (configuredApiUrl || (window.location.protocol === 'file:' ? 'http://127.0.0.1:8000/api/v1' : '/api/v1')).replace(/\/$/, '');
 
 export const api = axios.create({ baseURL: API_BASE_URL, timeout: 10000 });
 
 api.interceptors.request.use((config) => {
-    const token = sessionStorage.getItem('cardioguard_token');
+    const token = sessionStorage.getItem(TOKEN_KEY);
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
+});
+
+api.interceptors.response.use(undefined, (error) => {
+    if (error.response?.status === 401) {
+        sessionStorage.removeItem(TOKEN_KEY);
+        window.dispatchEvent(new Event('cardioguard:auth-expired'));
+    }
+    return Promise.reject(error);
 });
 
 export const submitAssessment = async (healthData, persist = true) => {
@@ -18,6 +27,8 @@ export const submitAssessment = async (healthData, persist = true) => {
 
 export const registerUser = async (userData) => (await api.post('/auth/register', userData)).data;
 export const loginUser = async (credentials) => (await api.post('/auth/login', credentials)).data;
+export const requestPasswordReset = async (email) => (await api.post('/auth/forgot-password', { email })).data;
+export const resetPassword = async (payload) => (await api.post('/auth/reset-password', payload)).data;
 export const getCurrentUser = async () => (await api.get('/auth/me')).data;
 export const getHistory = async () => (await api.get('/history')).data;
 

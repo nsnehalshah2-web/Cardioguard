@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getCurrentUser, loginUser, registerUser } from '../services/api';
+import { getCurrentUser, loginUser, registerUser, TOKEN_KEY } from '../services/api';
 
 const AuthContext = createContext(null);
-const TOKEN_KEY = 'cardioguard_token';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -15,6 +14,10 @@ export function AuthProvider({ children }) {
       sessionStorage.removeItem(TOKEN_KEY);
       setUser(null);
     }).finally(() => setChecking(false));
+
+    const handleAuthExpired = () => setUser(null);
+    window.addEventListener('cardioguard:auth-expired', handleAuthExpired);
+    return () => window.removeEventListener('cardioguard:auth-expired', handleAuthExpired);
   }, []);
 
   const authenticate = (payload) => { sessionStorage.setItem(TOKEN_KEY, payload.access_token); setUser(payload.user); return payload.user; };

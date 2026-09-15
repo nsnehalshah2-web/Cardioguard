@@ -4,6 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import AppShell from './components/layout/AppShell';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Signup from './pages/Signup';
 import Assessment from './pages/Assessment';
 import Dashboard from './pages/Dashboard';
@@ -24,6 +26,8 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<AppShell />}>
           <Route path="/assessment" element={<Assessment />} />
