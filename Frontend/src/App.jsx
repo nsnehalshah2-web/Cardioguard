@@ -19,8 +19,12 @@ import CheckIn from './pages/CheckIn';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
+  const basename = import.meta.env.BASE_URL === './'
+    ? undefined
+    : import.meta.env.BASE_URL.replace(/\/$/, '');
+
   return (
-    <Router>
+    <Router basename={basename}>
       <AuthProvider>
       <Routes>
         <Route path="/" element={<Landing />} />
