@@ -25,6 +25,21 @@ The platform combines **Machine Learning, risk prediction, What-If analysis, aut
 - 📱 Responsive Web Interface
 
 ---
+
+## 🧠 System Workflow
+
+```mermaid
+flowchart LR
+    A[User] --> B[React Frontend]
+    B --> C[FastAPI Backend]
+    C --> D[Input Validation]
+    D --> E[StandardScaler]
+    E --> F[XGBoost Model]
+    F --> G[Risk Prediction]
+    G --> B
+```
+
+
 ## 🧠 Machine Learning Model
 
 CardioGuard uses an XGBoost classifier with 9 clinical features:
@@ -56,4 +71,4 @@ flowchart TB
 ## 👩‍💻 Author
 
 - Nehal Shah
-- Computer Science Engineering
+  
