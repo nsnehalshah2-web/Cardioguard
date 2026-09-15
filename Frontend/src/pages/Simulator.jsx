@@ -16,20 +16,37 @@ import useHistoryData from "../hooks/useHistoryData";
 export default function Simulator() {
   const { history, loading: historyLoading } = useHistoryData();
   const latest = history[0];
-  const baselineData = latest?.form_data;
+  const [baselineData, setBaselineData] = useState(null);
   const [baselineRisk, setBaselineRisk] = useState(null);
   const [simData, setSimData] = useState(null);
   const [simRisk, setSimRisk] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
-    if (historyLoading || !baselineData) return;
+    if (historyLoading) return;
+    const assessment = latest?.form_data;
+    const hasSliderValues = assessment
+      && Number.isFinite(Number(assessment.trestbps))
+      && Number.isFinite(Number(assessment.chol))
+      && Number.isFinite(Number(assessment.thalach));
+    if (!hasSliderValues) {
+      setBaselineData(null);
+      setSimData(null);
+      return;
+    }
+    const loadedBaseline = {
+      ...assessment,
+      trestbps: Number(assessment.trestbps),
+      chol: Number(assessment.chol),
+      thalach: Number(assessment.thalach),
+    };
     let active = true;
-    setSimData({ ...baselineData });
+    setBaselineData(loadedBaseline);
+    setSimData({ ...loadedBaseline });
     setBaselineRisk(null);
     setSimRisk(null);
     setError("");
-    submitAssessment({ ...baselineData }, false)
+    submitAssessment({ ...loadedBaseline }, false)
       .then((result) => {
         if (active) setBaselineRisk(Number(result.risk_probability));
       })
@@ -39,7 +56,7 @@ export default function Simulator() {
     return () => {
       active = false;
     };
-  }, [historyLoading, latest?.id]);
+  }, [historyLoading, latest?.id, latest?.form_data?.trestbps, latest?.form_data?.chol, latest?.form_data?.thalach]);
   useEffect(() => {
     if (historyLoading || !latest || !simData || baselineRisk === null) return;
     let active = true;
