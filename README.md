@@ -10,7 +10,9 @@ The platform combines **Machine Learning, risk prediction, What-If analysis, aut
 
 ## 🌐 Live Demo
 
-**https://nsnehalshah2-web.github.io/Cardioguard/**
+[**Open CardioGuard**](https://nsnehalshah2-web.github.io/Cardioguard/)
+
+---
 
 ## 🚀 Features
 
@@ -23,48 +25,16 @@ The platform combines **Machine Learning, risk prediction, What-If analysis, aut
 - 📱 Responsive Web Interface
 
 ---
-
-## 🧠 System Workflow
-
-```mermaid
-flowchart LR
-    A[User] --> B[React Frontend]
-    B --> C[FastAPI Backend]
-    C --> D[Input Validation]
-    D --> E[StandardScaler]
-    E --> F[XGBoost Model]
-    F --> G[Risk Prediction]
-    G --> B
-🔬 What-If Analysis
-🧠 Machine Learning Model
+##🧠 Machine Learning Model
 
 CardioGuard uses an XGBoost classifier with 9 clinical features:
 
-Age • Sex • Blood Pressure • Cholesterol • FBS • Resting ECG • Max Heart Rate • Exercise Angina • Oldpeak
-
-Clinical Inputs
-      ↓
-Data Validation
-      ↓
-Feature Scaling
-      ↓
-XGBoost Classifier
-      ↓
-Risk Probability
-      ↓
-CardioGuard Dashboard
-🛠️ Tech Stack
-Frontend: React, Vite, JavaScript
-Backend: Python, FastAPI
-Machine Learning: XGBoost, Scikit-learn
-Data Processing: Pandas, NumPy
-Database: SQLite
-Deployment: GitHub Pages + Render
-👩‍💻 Author
-
-Nehal Shah
-Computer Science Engineering
-
-⚠️ Disclaimer
-
-CardioGuard is an educational and research project. It does not provide medical diagnosis and should not replace professional medical advice.
+- Age
+- Sex
+- Blood Pressure
+- Cholesterol
+- Fasting Blood Sugar
+- Resting ECG
+- Maximum Heart Rate
+- Exercise-Induced Angina
+- Oldpeak
