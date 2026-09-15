@@ -4,7 +4,7 @@ export const TOKEN_KEY = 'cardioguard_token';
 const configuredApiUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 const API_BASE_URL = (configuredApiUrl || (window.location.protocol === 'file:' ? 'http://127.0.0.1:8000/api/v1' : '/api/v1')).replace(/\/$/, '');
 
-export const api = axios.create({ baseURL: API_BASE_URL, timeout: 10000 });
+export const api = axios.create({ baseURL: API_BASE_URL, timeout: 30000 });
 
 api.interceptors.request.use((config) => {
     const token = sessionStorage.getItem(TOKEN_KEY);
