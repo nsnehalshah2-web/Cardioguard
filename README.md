@@ -4,74 +4,71 @@
 
 CardioGuard is an AI-powered web application designed to estimate cardiovascular disease risk using clinical health parameters and provide personalized, explainable health insights.
 
-The platform combines machine learning-based risk prediction with a modern web interface, authentication, assessment history, and health recommendations.
+The platform combines **Machine Learning, risk prediction, What-If analysis, authentication, assessment history, and health insights** in a modern web interface.
 
 ---
 
-## 🚀 Live Demo
+## 🌐 Live Demo
 
-### Frontend
-https://cardioguard-gyud.onrender.com/
-
-### Backend API
-https://cardioguard-api-noup.onrender.com/
+[**Open CardioGuard**](https://nsnehalshah2-web.github.io/Cardioguard/)
 
 ---
 
-## 📌 Features
+## 🚀 Features
 
-- 🫀 **Cardiovascular Risk Prediction**
-- 🤖 **Machine Learning-based assessment**
-- 📊 **Risk percentage and risk classification**
-- 🧠 **Explainable health insights**
-- 👤 **User authentication**
-- 🔐 **JWT-based authentication**
-- 📝 **Personal health assessments**
-- 📚 **Assessment history**
-- 📈 **Health risk visualization**
-- 💡 **Personalized recommendations**
-- 🌐 **Responsive web interface**
-- ⚡ **FastAPI backend**
-- ⚛️ **React + Vite frontend**
+- 🩺 Cardiovascular Risk Prediction
+- 🔬 What-If Risk Simulation
+- 📊 Model Insights & Explainable AI
+- 🔐 User Authentication & Password Reset
+- 📋 Assessment History
+- ⚠️ Input Validation
+- 📱 Responsive Web Interface
 
 ---
 
-## 🏗️ System Architecture
+## 🧠 System Workflow
 
-```text
-                    ┌──────────────────────┐
-                    │      User            │
-                    │  Web Browser         │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   React Frontend     │
-                    │      + Vite          │
-                    └──────────┬───────────┘
-                               │
-                         REST API / HTTPS
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │    FastAPI Backend   │
-                    │      Python          │
-                    └──────────┬───────────┘
-                               │
-                    ┌──────────┴──────────┐
-                    ▼                     ▼
-          ┌──────────────────┐   ┌──────────────────┐
-          │ Machine Learning │   │ Authentication   │
-          │ Prediction Model │   │   & User Data    │
-          └────────┬─────────┘   └────────┬─────────┘
-                   │                      │
-                   └──────────┬───────────┘
-                              ▼
-                    ┌──────────────────────┐
-                    │      Database        │
-                    │ Assessment History   │
-                    └──────────────────────┘
+```mermaid
+flowchart LR
+    A[User] --> B[React Frontend]
+    B --> C[FastAPI Backend]
+    C --> D[Input Validation]
+    D --> E[StandardScaler]
+    E --> F[XGBoost Model]
+    F --> G[Risk Prediction]
+    G --> B
+```
 
-The backend also requires `CARDIOGUARD_SECRET_KEY`, `FRONTEND_URL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, and `SMTP_FROM`. Set `SMTP_USE_TLS=true` for standard TLS SMTP. If the frontend URL includes a path, such as GitHub Pages, set `FRONTEND_URL` to the origin and `FRONTEND_APP_URL` to the full URL ending in `/Cardioguard`.
 
-For local development, run `npm run dev` from the repository root. This starts the frontend and backend together.
+## 🧠 Machine Learning Model
+
+CardioGuard uses an XGBoost classifier with 9 clinical features:
+
+- Age
+- Sex
+- Blood Pressure
+- Cholesterol
+- Fasting Blood Sugar
+- Resting ECG
+- Maximum Heart Rate
+- Exercise-Induced Angina
+- Oldpeak
+
+## 🔗 System Architecture
+
+```mermaid
+flowchart TB
+    U[User] --> F[React Frontend]
+    F --> API[FastAPI REST API]
+    API --> V[Input Validation]
+    V --> S[StandardScaler]
+    S --> M[XGBoost Model]
+    M --> R[Risk Prediction]
+    API --> DB[(SQLite Database)]
+    R --> F
+```
+
+## 👩‍💻 Author
+
+- Nehal Shah
+  
