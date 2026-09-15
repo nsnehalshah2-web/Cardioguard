@@ -23,21 +23,32 @@ export default function Simulator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
-    if (!baselineData) return;
+    if (historyLoading || !baselineData) return;
+    let active = true;
     setSimData({ ...baselineData });
     setBaselineRisk(null);
     setSimRisk(null);
-  }, [latest?.id]);
+    setError("");
+    submitAssessment({ ...baselineData }, false)
+      .then((result) => {
+        if (active) setBaselineRisk(Number(result.risk_probability));
+      })
+      .catch(() => {
+        if (active) setError("Live simulation is unavailable. Check the backend connection.");
+      });
+    return () => {
+      active = false;
+    };
+  }, [historyLoading, latest?.id]);
   useEffect(() => {
-    if (historyLoading || !latest || !simData) return;
+    if (historyLoading || !latest || !simData || baselineRisk === null) return;
     let active = true;
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
         const result = await submitAssessment(simData, false);
         if (active) {
-          if (baselineRisk === null) setBaselineRisk(result.risk_probability);
-          setSimRisk(result.risk_probability);
+          setSimRisk(Number(result.risk_probability));
         }
       } catch {
         if (active)
@@ -52,7 +63,7 @@ export default function Simulator() {
       active = false;
       clearTimeout(timer);
     };
-  }, [simData, historyLoading, latest]);
+  }, [simData, historyLoading, latest, baselineRisk]);
   const displayedBaselineRisk = baselineRisk === null ? null : Math.round(Number(baselineRisk));
   const displayedSimRisk = simRisk === null ? null : Math.round(Number(simRisk));
   const change =
