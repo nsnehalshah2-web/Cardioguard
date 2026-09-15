@@ -71,6 +71,10 @@ export default function Simulator() {
   const changed = (key) => simData[key] !== baselineData[key];
   const update = (key, value) =>
     setSimData((data) => ({ ...data, [key]: Number(value) }));
+  const resetScenario = () => {
+    setSimData({ ...baselineData });
+    setSimRisk(baselineRisk);
+  };
   if (historyLoading)
     return (
       <div className="auth-loading">
@@ -108,7 +112,7 @@ export default function Simulator() {
         </div>
         <button
           className="btn btn-ghost"
-          onClick={() => setSimData(baselineData)}
+          onClick={resetScenario}
         >
           <RefreshCcw size={16} /> Reset to baseline
         </button>
