@@ -14,7 +14,7 @@ import EmptyState from "../components/common/EmptyState";
 import useHistoryData from "../hooks/useHistoryData";
 
 export default function Simulator() {
-  const { history, loading: historyLoading } = useHistoryData();
+  const { history, loading: historyLoading, error: historyError } = useHistoryData();
   const latest = history[0];
   const [baselineData, setBaselineData] = useState(null);
   const [baselineRisk, setBaselineRisk] = useState(null);
@@ -97,6 +97,16 @@ export default function Simulator() {
       <div className="auth-loading">
         <div className="loading-spinner" />
         <span>Loading your private baseline...</span>
+      </div>
+    );
+  if (historyError)
+    return (
+      <div className="center-page">
+        <EmptyState
+          title="Baseline unavailable"
+          text={historyError}
+          action="Start assessment"
+        />
       </div>
     );
   if (!latest)

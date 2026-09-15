@@ -68,8 +68,9 @@ def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
         db.add(reset_token)
         db.commit()
         frontend_url = os.getenv("FRONTEND_APP_URL", os.getenv("FRONTEND_URL", "http://127.0.0.1:5173")).rstrip("/")
+        reset_path = "/#/reset-password" if "github.io" in frontend_url else "/reset-password"
         try:
-            send_password_reset_email(user.email, f"{frontend_url}/reset-password?token={raw_token}")
+            send_password_reset_email(user.email, f"{frontend_url}{reset_path}?token={raw_token}")
         except Exception as error:
             db.delete(reset_token)
             db.commit()
