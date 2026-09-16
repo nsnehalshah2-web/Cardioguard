@@ -20,8 +20,7 @@ import CheckIn from './pages/CheckIn';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
-  const isProduction = import.meta.env.BASE_URL !== './';
-  const Router = isProduction ? HashRouter : BrowserRouter;
+  const Router = import.meta.env.DEV || window.location.protocol === 'file:' ? BrowserRouter : HashRouter;
 
   return (
     <Router>
